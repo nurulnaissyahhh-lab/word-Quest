@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Download source code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Java
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -22,16 +22,14 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: |
+            platform-tools
+            platforms;android-35
+            build-tools;35.0.0
+          accept-android-sdk-licenses: true
 
-      - name: Install Android components
-        run: |
-          sdkmanager --install \
-            "platform-tools" \
-            "platforms;android-35" \
-            "build-tools;35.0.0"
-          yes | sdkmanager --licenses
-
-      - name: Install Linux dependencies
+      - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -44,14 +42,13 @@ jobs:
           python3 -m pip install --user --upgrade pip
           python3 -m pip install --user buildozer cython==0.29.33
 
-      - name: Build Word Quest APK
+      - name: Build APK
         run: |
           export PATH="$HOME/.local/bin:$PATH"
           export ANDROIDSDK="$ANDROID_HOME"
-          export ANDROIDNDK="$HOME/.buildozer/android/platform/android-ndk"
           buildozer android debug
 
-      - name: Save APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Word-Quest-APK
