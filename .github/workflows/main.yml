@@ -1,51 +1,59 @@
 name: Build Word Quest APK
 
 on:
-  workflow_dispatch:
   push:
-    branches: [ main ]
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout project
+      - name: Download source code
         uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: Install Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: "17"
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Android Build Tools
+      - name: Install Android components
         run: |
+          sdkmanager --install \
+            "platform-tools" \
+            "platforms;android-35" \
+            "build-tools;35.0.0"
           yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "platforms;android-35" "build-tools;37.0.0"
-          echo "ANDROIDSDK=$ANDROID_HOME" >> $GITHUB_ENV
 
-      - name: Install dependencies
+      - name: Install Linux dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential git zip unzip \
-            python3-pip python3-setuptools python3-wheel \
+          sudo apt-get install -y \
+            build-essential git zip unzip \
+            python3-pip python3-venv \
             libffi-dev libssl-dev zlib1g-dev
 
       - name: Install Buildozer
         run: |
-          pip3 install --user --upgrade buildozer Cython==0.29.33
+          python3 -m pip install --user --upgrade pip
+          python3 -m pip install --user buildozer cython==0.29.33
 
-      - name: Build APK
+      - name: Build Word Quest APK
         run: |
           export PATH="$HOME/.local/bin:$PATH"
+          export ANDROIDSDK="$ANDROID_HOME"
+          export ANDROIDNDK="$HOME/.buildozer/android/platform/android-ndk"
           buildozer android debug
 
-      - name: Upload APK
+      - name: Save APK
         uses: actions/upload-artifact@v4
         with:
           name: Word-Quest-APK
           path: bin/*.apk
+          if-no-files-found: error
