@@ -1,0 +1,20 @@
+WORD QUEST - PROYEK ANDROID
+
+Isi:
+- main.py: aplikasi Android Kivy Word Quest dengan halaman pembuka, permainan, dan hasil.
+- buildozer.spec: pengaturan paket Android.
+- .github/workflows/android.yml: workflow untuk membangun APK di GitHub Actions (cloud).
+
+CATATAN PENTING:
+Build APK belum dijalankan di sini. File APK akan dibuat setelah folder proyek ini diunggah ke repository GitHub dan workflow dijalankan.
+Kamu tidak perlu memasang Ubuntu/Linux di laptop; proses build berlangsung di server GitHub.
+
+Langkah ringkas:
+1. Ekstrak ZIP ini.
+2. Buat repository baru di GitHub.
+3. Unggah semua isi folder proyek (termasuk folder .github).
+4. Buka tab Actions di repository, pilih "Build Word Quest APK", lalu tekan "Run workflow".
+5. Setelah selesai, buka hasil run dan unduh artifact bernama "Word-Quest-APK".
+6. Ekstrak artifact ZIP untuk mendapatkan file .apk, lalu pindahkan APK ke HP Android dan pasang.
+
+Untuk instalasi APK, Android mungkin meminta izin memasang aplikasi dari sumber tersebut. Pastikan APK hanya dari workflow repository milikmu sendiri.
